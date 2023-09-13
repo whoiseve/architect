@@ -1,0 +1,203 @@
+html {
+  cursor: none;
+}
+
+.cursor {
+  left: 0;
+  top: 0;
+  width: 10px;
+  height: 10px;
+  background-color: #f87500;
+  position: absolute;
+  border-radius: 5px;
+}
+
+.cursor__follower {
+  transition: transform 0.4s;
+  width: 6px;
+  height: 6px;
+}
+
+body {
+  margin: 0;
+  background: #191a1b;
+  font-family: "Muli", sans-serif;
+  cursor: none;
+}
+#wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  cursor: none;
+}
+
+#content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 600px;
+  height: 300px;
+  cursor: none;
+  white-space: nowrap;
+  overflow: hidden;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#plus {
+  flex-shrink: 0;
+  position: relative;
+  width: 95px;
+  height: 95px;
+  transform: rotate(45deg);
+  margin: 0 20px;
+  transition: transform 500ms;
+}
+#plus span {
+  display: block;
+  position: absolute;
+  background-color: darkorange;
+  width: 24%;
+  height: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: transform 400ms, background-color 500ms;
+}
+#plus span:nth-of-type(1) {
+  transform: translateX(-50%) rotate(90deg);
+}
+
+#content:hover #plus {
+  transform: rotate(0deg) scale(0.33) translateY(-5px);
+}
+#content:hover #plus span {
+  background-color: #d2d2d2;
+}
+#content:hover #plus span:nth-of-type(1) {
+  transform: translateX(-50%) rotate(0deg);
+}
+
+.architect {
+  flex: 1;
+  font-size: 42px;
+  font-weight: bold;
+  color: #d2d2d2;
+  opacity: 0;
+  transition: transform 500ms, opacity 500ms;
+}
+.architect span {
+  position: relative;
+  display: inline-block;
+  transition: transform 500ms;
+}
+
+#content:hover .architect {
+  opacity: 1;
+}
+
+/* ARCH initial */
+.architect:nth-of-type(1) {
+  text-align: right;
+  transform: translateX(0px);
+}
+.architect:nth-of-type(1) span:nth-of-type(1) {
+  transform: translateX(-80px);
+}
+.architect:nth-of-type(1) span:nth-of-type(2) {
+  transform: translateX(-50px);
+}
+.architect:nth-of-type(1) span:nth-of-type(3) {
+  transform: translateX(-20px);
+}
+.architect:nth-of-type(1) span:nth-of-type(4) {
+  transform: translateX(-0px);
+}
+
+/* ARCH hovered */
+#content:hover .architect:nth-of-type(1) {
+  transform: translateX(47px);
+}
+#content:hover .architect:nth-of-type(1) span:nth-of-type(1) {
+  transform: translateX(-30px);
+}
+#content:hover .architect:nth-of-type(1) span:nth-of-type(2) {
+  transform: translateX(-20px);
+}
+#content:hover .architect:nth-of-type(1) span:nth-of-type(3) {
+  transform: translateX(-10px);
+}
+#content:hover .architect:nth-of-type(1) span:nth-of-type(4) {
+  transform: translateX(0px);
+}
+
+/* TECT initial */
+.architect:nth-of-type(2) {
+  text-align: left;
+  transform: translateX(0px);
+}
+.architect:nth-of-type(2) span:nth-of-type(4) {
+  transform: translateX(80px);
+}
+.architect:nth-of-type(2) span:nth-of-type(3) {
+  transform: translateX(50px);
+}
+.architect:nth-of-type(2) span:nth-of-type(2) {
+  transform: translateX(20px);
+}
+.architect:nth-of-type(2) span:nth-of-type(1) {
+  transform: translateX(0px);
+}
+
+/* TECT hovered */
+#content:hover .architect:nth-of-type(2) {
+  transform: translateX(-47px);
+}
+#content:hover .architect:nth-of-type(2) span:nth-of-type(1) {
+  transform: translateX(0px);
+}
+#content:hover .architect:nth-of-type(2) span:nth-of-type(2) {
+  transform: translateX(10px);
+}
+#content:hover .architect:nth-of-type(2) span:nth-of-type(3) {
+  transform: translateX(20px);
+}
+#content:hover .architect:nth-of-type(2) span:nth-of-type(4) {
+  transform: translateX(30px);
+}
+footer {
+  position: absolute;
+  bottom: 5px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  z-index: 9999999;
+  cursor: none;
+}
+
+footer > * {
+  font-family: "Muli", sans-serif;
+  color: #e9e5e4;
+  text-decoration: none;
+  transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+footer {
+  font-family: "Muli", sans-serif;
+  color: #e9e5e4;
+  font-size: 17px;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+footer > a:hover {
+  color: #f87500;
+  letter-spacing: 2px;
+  font-size: 17px;
+  font-style: bold;
+  cursor: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
