@@ -1,0 +1,1975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AAES — Adaptive Acoustic Environment System · UXMG</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,200;0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,200;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #030406;
+    --off-black: #07090e;
+    --graphite: #0d1017;
+    --mid: #141820;
+    --panel: #111520;
+    --border: rgba(100,160,255,0.07);
+    --border-bright: rgba(100,160,255,0.14);
+    --white: #eef2f8;
+    --cool-white: #dde5f2;
+    --blue: #4a90d9;
+    --blue-dim: rgba(74,144,217,0.12);
+    --blue-glow: rgba(74,144,217,0.05);
+    --cyan: #5bc4e0;
+    --cyan-dim: rgba(91,196,224,0.1);
+    --gold: #c9a96e;
+    --text-muted: rgba(238,242,248,0.32);
+    --text-mid: rgba(238,242,248,0.55);
+    --text-body: rgba(238,242,248,0.75);
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --didot: Didot, "Bodoni 72", "Bodoni 72 Oldstyle", "Bodoni MT", "Times New Roman", serif;
+    --display: 'Akira Expanded', sans-serif;
+    --mono: 'PP Supply Mono', monospace;
+    --body: 'PP Supply Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--sans);
+    font-weight: 300;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  ::-webkit-scrollbar { width: 2px; }
+  ::-webkit-scrollbar-track { background: var(--black); }
+  ::-webkit-scrollbar-thumb { background: var(--blue); border-radius: 2px; }
+
+  /* ── CONCEPT BANNER ── */
+  .concept-banner {
+    background: rgba(74,144,217,0.08);
+    border-bottom: 1px solid rgba(74,144,217,0.15);
+    padding: 0.7rem 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+  }
+  .concept-banner .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--cyan);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  .concept-banner p {
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    opacity: 0.8;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.3); }
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky;
+    top: 0; z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.3rem 3rem;
+    background: rgba(3,4,6,0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-left {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+  .nav-back {
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.25s;
+  }
+  .nav-back:hover { color: var(--blue); }
+  .nav-back::before { content: '←'; font-size: 0.85rem; }
+  .nav-divider { width: 1px; height: 18px; background: var(--border-bright); }
+  .nav-title {
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-mid);
+  }
+  .nav-title span { color: var(--blue); }
+  .nav-badge {
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    border: 1px solid rgba(91,196,224,0.25);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 6rem 2rem 8rem;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 50%, rgba(74,144,217,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 30% at 50% 80%, rgba(91,196,224,0.04) 0%, transparent 60%);
+  }
+
+  /* Oscilloscope grid */
+  .hero-scope {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    opacity: 0.4;
+  }
+  .hero-scope svg { width: 100%; height: 100%; }
+
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.25em;
+    color: var(--blue);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 1s var(--ease-out) 0.3s forwards;
+  }
+  .hero-title {
+    font-family: var(--serif);
+    font-size: clamp(3.5rem, 10vw, 9rem);
+    font-weight: 300;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    color: var(--white);
+    opacity: 0;
+    animation: fadeUp 1.1s var(--ease-out) 0.5s forwards;
+  }
+  .hero-title .acronym {
+    display: block;
+    font-style: italic;
+    color: var(--cool-white);
+    opacity: 0.55;
+    font-size: 0.45em;
+    letter-spacing: 0.06em;
+    margin-top: 0.6rem;
+    font-style: normal;
+    font-weight: 200;
+  }
+  .hero-divider {
+    width: 80px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--blue), transparent);
+    margin: 3rem auto 3rem;
+    opacity: 0;
+    animation: fadeIn 1s var(--ease-out) 0.8s forwards;
+  }
+  .hero-sub {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    font-weight: 200;
+    color: var(--text-mid);
+    max-width: 600px;
+    line-height: 1.75;
+    opacity: 0;
+    animation: fadeUp 1s var(--ease-out) 0.85s forwards;
+  }
+  .hero-meta {
+    margin-top: 3.5rem;
+    display: flex;
+    gap: 3rem;
+    justify-content: center;
+    opacity: 0;
+    animation: fadeUp 1s var(--ease-out) 1.1s forwards;
+  }
+  .hero-meta-item {
+    text-align: center;
+  }
+  .hero-meta-val {
+    font-family: var(--mono);
+    font-size: 1.6rem;
+    font-weight: 300;
+    color: var(--blue);
+    display: block;
+    line-height: 1;
+  }
+  .hero-meta-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    display: block;
+  }
+  .hero-scroll {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    opacity: 0;
+    animation: fadeIn 1s var(--ease-out) 1.6s forwards;
+  }
+  .hero-scroll span {
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
+  }
+  .scroll-line {
+    width: 1px; height: 40px;
+    background: linear-gradient(to bottom, var(--blue), transparent);
+    animation: scrollPulse 2.5s ease-in-out infinite;
+  }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+
+  /* ── ABSTRACT ── */
+  .abstract {
+    padding: 8rem 3rem;
+    max-width: 1300px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 8rem;
+    align-items: start;
+  }
+  .abstract-label-col {
+    position: sticky;
+    top: 6rem;
+  }
+  .section-num {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--blue);
+    opacity: 0.6;
+    letter-spacing: 0.12em;
+    margin-bottom: 0.6rem;
+    display: block;
+  }
+  .section-heading {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--white);
+  }
+  .section-heading em { font-style: italic; color: var(--blue); }
+  .abstract-content p {
+    font-size: 1rem;
+    font-weight: 200;
+    color: var(--text-body);
+    line-height: 1.85;
+    margin-bottom: 1.5rem;
+  }
+  .abstract-content p:last-child { margin-bottom: 0; }
+  .abstract-content strong {
+    color: var(--white);
+    font-weight: 400;
+  }
+
+  /* ── PROBLEM STATEMENT ── */
+  .problems {
+    background: var(--off-black);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 7rem 3rem;
+  }
+  .problems-inner { max-width: 1300px; margin: 0 auto; }
+  .problems-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 4rem;
+    margin-bottom: 5rem;
+  }
+  .problems-header h2 {
+    font-family: var(--serif);
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    font-weight: 300;
+    line-height: 1;
+    color: var(--white);
+  }
+  .problems-header h2 em { font-style: italic; color: var(--cyan); }
+  .problems-header p {
+    max-width: 360px;
+    font-size: 0.92rem;
+    font-weight: 200;
+    color: var(--text-mid);
+    line-height: 1.75;
+    padding-bottom: 0.3rem;
+  }
+  .problem-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .problem-card {
+    background: var(--off-black);
+    padding: 3rem;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.35s;
+  }
+  .problem-card:hover { background: var(--graphite); }
+  .problem-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--blue), var(--cyan));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.45s var(--ease-out);
+  }
+  .problem-card:hover::before { transform: scaleX(1); }
+  .problem-card-num {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--blue);
+    opacity: 0.5;
+    letter-spacing: 0.12em;
+    margin-bottom: 1.2rem;
+    display: block;
+  }
+  .problem-card h3 {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--white);
+    margin-bottom: 0.8rem;
+    letter-spacing: 0.04em;
+  }
+  .problem-card p {
+    font-size: 0.88rem;
+    font-weight: 200;
+    color: var(--text-mid);
+    line-height: 1.72;
+  }
+
+  /* ── ARCHITECTURE DIAGRAM ── */
+  .architecture {
+    padding: 9rem 3rem;
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+  .arch-header {
+    text-align: center;
+    margin-bottom: 5rem;
+  }
+  .arch-header h2 {
+    font-family: var(--serif);
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    font-weight: 300;
+    color: var(--white);
+    margin-bottom: 1rem;
+  }
+  .arch-header h2 em { font-style: italic; color: var(--blue); }
+  .arch-header p {
+    font-size: 0.95rem;
+    font-weight: 200;
+    color: var(--text-mid);
+    max-width: 520px;
+    margin: 0 auto;
+    line-height: 1.75;
+  }
+
+  /* System flow */
+  .system-flow {
+    display: grid;
+    grid-template-columns: 1fr 60px 1fr 60px 1fr 60px 1fr;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 4rem;
+  }
+  .flow-node {
+    background: var(--panel);
+    border: 1px solid var(--border-bright);
+    border-radius: 4px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    position: relative;
+    transition: border-color 0.35s, background 0.35s;
+  }
+  .flow-node:hover {
+    border-color: var(--blue);
+    background: var(--mid);
+  }
+  .flow-node-icon {
+    font-family: var(--mono);
+    font-size: 1.5rem;
+    color: var(--blue);
+    margin-bottom: 0.8rem;
+    display: block;
+  }
+  .flow-node-label {
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--white);
+    margin-bottom: 0.4rem;
+  }
+  .flow-node-sub {
+    font-size: 0.72rem;
+    font-weight: 200;
+    color: var(--text-muted);
+  }
+  .flow-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--blue);
+    opacity: 0.4;
+    font-size: 1.2rem;
+  }
+
+  /* Layer cards */
+  .layer-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .layer-card {
+    background: var(--off-black);
+    padding: 3rem 2.5rem;
+    transition: background 0.35s;
+  }
+  .layer-card:hover { background: var(--graphite); }
+  .layer-num {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    color: var(--cyan);
+    letter-spacing: 0.12em;
+    margin-bottom: 1rem;
+    display: block;
+    opacity: 0.7;
+  }
+  .layer-title {
+    font-size: 0.9rem;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    color: var(--white);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+  }
+  .layer-desc {
+    font-size: 0.86rem;
+    font-weight: 200;
+    color: var(--text-mid);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+  .layer-specs {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .layer-specs li {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    padding-left: 1rem;
+    position: relative;
+    line-height: 1.5;
+  }
+  .layer-specs li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--blue);
+    opacity: 0.5;
+  }
+
+  /* ── PARAMETERS SECTION ── */
+  .parameters {
+    background: var(--graphite);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 8rem 3rem;
+  }
+  .params-inner { max-width: 1300px; margin: 0 auto; }
+  .params-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: start;
+    margin-top: 5rem;
+  }
+  .param-left h3 {
+    font-family: var(--serif);
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+  }
+  .param-left h3 em { font-style: italic; color: var(--blue); }
+  .param-left p {
+    font-size: 0.92rem;
+    font-weight: 200;
+    color: var(--text-mid);
+    line-height: 1.8;
+  }
+
+  /* Fake plugin UI */
+  .plugin-ui {
+    background: var(--panel);
+    border: 1px solid var(--border-bright);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .plugin-header {
+    background: var(--mid);
+    border-bottom: 1px solid var(--border);
+    padding: 0.8rem 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .plugin-header-title {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    color: var(--blue);
+  }
+  .plugin-header-status {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--cyan);
+  }
+  .status-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--cyan);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  .plugin-body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .param-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .param-name {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--text-mid);
+    width: 130px;
+    flex-shrink: 0;
+  }
+  .param-bar {
+    flex: 1;
+    height: 3px;
+    background: rgba(74,144,217,0.12);
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+  }
+  .param-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue), var(--cyan));
+    border-radius: 2px;
+    transition: width 0.6s var(--ease-out);
+  }
+  .param-val {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--blue);
+    width: 32px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .plugin-waveform {
+    margin-top: 0.5rem;
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+    height: 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .plugin-waveform svg { width: 100%; height: 100%; }
+
+  /* ── CONTROL MODES ── */
+  .control-modes {
+    padding: 8rem 3rem;
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+  .modes-header {
+    margin-bottom: 4rem;
+  }
+  .modes-header h2 {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 300;
+    color: var(--white);
+  }
+  .modes-header h2 em { font-style: italic; color: var(--blue); }
+  .modes-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .mode-card {
+    background: var(--off-black);
+    padding: 2.5rem 2rem;
+    position: relative;
+    overflow: hidden;
+    cursor: default;
+    transition: background 0.35s;
+  }
+  .mode-card:hover { background: var(--panel); }
+  .mode-card.active {
+    background: var(--mid);
+    border-right: none;
+  }
+  .mode-card.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--blue), var(--cyan));
+  }
+  .mode-indicator {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    border: 1px solid var(--border-bright);
+    margin-bottom: 1.5rem;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .mode-card.active .mode-indicator {
+    background: var(--cyan);
+    border-color: var(--cyan);
+    box-shadow: 0 0 8px var(--cyan);
+  }
+  .mode-card:hover .mode-indicator { border-color: var(--blue); }
+  .mode-name {
+    font-size: 0.85rem;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--white);
+    margin-bottom: 0.8rem;
+  }
+  .mode-desc {
+    font-size: 0.85rem;
+    font-weight: 200;
+    color: var(--text-mid);
+    line-height: 1.65;
+  }
+
+  /* ── RECALL SYSTEM ── */
+  .recall {
+    background: var(--off-black);
+    border-top: 1px solid var(--border);
+    padding: 8rem 3rem;
+  }
+  .recall-inner { max-width: 1300px; margin: 0 auto; }
+  .recall-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7rem;
+    align-items: center;
+    margin-top: 5rem;
+  }
+  .recall-left h3 {
+    font-family: var(--serif);
+    font-size: clamp(1.8rem, 3.5vw, 3rem);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.15;
+    margin-bottom: 1.5rem;
+  }
+  .recall-left h3 em { font-style: italic; color: var(--cyan); }
+  .recall-left p {
+    font-size: 0.92rem;
+    font-weight: 200;
+    color: var(--text-mid);
+    line-height: 1.8;
+    margin-bottom: 1rem;
+  }
+  .recall-modes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 2rem;
+  }
+  .recall-mode {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 1.2rem 1.5rem;
+    border-radius: 3px;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    transition: border-color 0.3s;
+  }
+  .recall-mode:hover { border-color: rgba(74,144,217,0.3); }
+  .recall-mode-icon {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--blue);
+    padding-top: 0.1rem;
+    flex-shrink: 0;
+  }
+  .recall-mode-name {
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: var(--white);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.25rem;
+  }
+  .recall-mode-desc {
+    font-size: 0.8rem;
+    font-weight: 200;
+    color: var(--text-mid);
+    line-height: 1.55;
+  }
+
+  /* Session file visual */
+  .session-visual {
+    background: var(--panel);
+    border: 1px solid var(--border-bright);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .session-header {
+    background: var(--mid);
+    border-bottom: 1px solid var(--border);
+    padding: 0.8rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .win-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+  .win-dot.red { background: rgba(255,95,87,0.5); }
+  .win-dot.yellow { background: rgba(255,189,46,0.5); }
+  .win-dot.green { background: rgba(39,201,63,0.5); }
+  .session-title {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-left: 0.5rem;
+    letter-spacing: 0.06em;
+  }
+  .session-body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .session-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.8rem 1rem;
+    background: var(--off-black);
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    transition: border-color 0.3s;
+  }
+  .session-row:hover { border-color: rgba(74,144,217,0.2); }
+  .session-row-left {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .session-icon {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--blue);
+    opacity: 0.7;
+  }
+  .session-row-name {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text-body);
+    letter-spacing: 0.05em;
+  }
+  .session-row-val {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--cyan);
+    opacity: 0.8;
+  }
+  .session-restore-btn {
+    margin-top: 0.5rem;
+    background: rgba(74,144,217,0.1);
+    border: 1px solid rgba(74,144,217,0.25);
+    color: var(--blue);
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    padding: 0.8rem 1.2rem;
+    border-radius: 3px;
+    cursor: pointer;
+    width: 100%;
+    text-transform: uppercase;
+    transition: background 0.25s;
+  }
+  .session-restore-btn:hover { background: rgba(74,144,217,0.18); }
+
+  /* ── PLUGIN SECTION ── */
+  .plugin-section {
+    padding: 9rem 3rem;
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+  .plugin-full {
+    background: var(--panel);
+    border: 1px solid var(--border-bright);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 4rem;
+  }
+  .plugin-full-header {
+    background: var(--mid);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .pf-title {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text-mid);
+    letter-spacing: 0.1em;
+  }
+  .pf-title span { color: var(--blue); }
+  .pf-tabs {
+    display: flex;
+    gap: 0;
+  }
+  .pf-tab {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.4rem 1rem;
+    color: var(--text-muted);
+    border-left: 1px solid var(--border);
+    cursor: pointer;
+    transition: color 0.2s, background 0.2s;
+  }
+  .pf-tab.active {
+    color: var(--blue);
+    background: rgba(74,144,217,0.07);
+  }
+  .plugin-full-body {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    min-height: 320px;
+  }
+  .pf-main {
+    padding: 2rem;
+    border-right: 1px solid var(--border);
+  }
+  .pf-main-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+
+  /* IR dimension grid */
+  .ir-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px;
+  }
+  .ir-cell {
+    aspect-ratio: 1;
+    border-radius: 2px;
+    transition: transform 0.3s;
+    cursor: pointer;
+  }
+  .ir-cell:hover { transform: scale(1.1); }
+
+  .pf-side {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  .pf-preset {
+    background: var(--off-black);
+    border: 1px solid var(--border);
+    padding: 0.8rem 1rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: border-color 0.25s, background 0.25s;
+  }
+  .pf-preset.selected {
+    border-color: rgba(74,144,217,0.4);
+    background: rgba(74,144,217,0.05);
+  }
+  .pf-preset:hover { border-color: rgba(74,144,217,0.25); }
+  .pf-preset-name {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--white);
+    margin-bottom: 0.25rem;
+  }
+  .pf-preset-meta {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--text-muted);
+  }
+
+  /* ── FUTURE ── */
+  .future {
+    background: var(--graphite);
+    border-top: 1px solid var(--border);
+    padding: 8rem 3rem;
+  }
+  .future-inner { max-width: 1300px; margin: 0 auto; }
+  .future-header {
+    text-align: center;
+    margin-bottom: 5rem;
+  }
+  .future-header h2 {
+    font-family: var(--serif);
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    font-weight: 300;
+    color: var(--white);
+    margin-bottom: 1rem;
+  }
+  .future-header h2 em { font-style: italic; color: var(--blue); }
+  .future-header p {
+    font-size: 0.95rem;
+    font-weight: 200;
+    color: var(--text-mid);
+    max-width: 520px;
+    margin: 0 auto;
+    line-height: 1.75;
+  }
+  .future-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .future-card {
+    background: var(--off-black);
+    padding: 3rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.35s;
+  }
+  .future-card:hover { background: var(--panel); }
+  .future-card-num {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    color: var(--blue);
+    opacity: 0.4;
+    letter-spacing: 0.1em;
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+  .future-card h3 {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--white);
+    margin-bottom: 0.8rem;
+    letter-spacing: 0.05em;
+  }
+  .future-card p {
+    font-size: 0.85rem;
+    font-weight: 200;
+    color: var(--text-mid);
+    line-height: 1.7;
+  }
+  .future-tag {
+    display: inline-block;
+    margin-top: 1.5rem;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    opacity: 0.6;
+  }
+
+  /* ── FINAL STATEMENT ── */
+  .final-statement {
+    padding: 10rem 3rem;
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .final-statement::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%; transform: translateX(-50%);
+    width: 1px; height: 80px;
+    background: linear-gradient(to bottom, transparent, var(--blue));
+  }
+  .final-statement blockquote {
+    font-family: var(--serif);
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 300;
+    line-height: 1.3;
+    color: var(--cool-white);
+    font-style: normal;
+    quotes: none;
+  }
+  .final-statement blockquote em { font-style: italic; color: var(--blue); }
+  .final-statement cite {
+    display: block;
+    margin-top: 2.5rem;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-style: normal;
+  }
+  .final-statement cite span { color: var(--blue); opacity: 0.7; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 4rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+  }
+  .footer-logo {
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-mid);
+  }
+  .footer-logo span { color: var(--blue); }
+  .footer-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+  .footer-links a {
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.25s;
+  }
+  .footer-links a:hover { color: var(--blue); }
+  .footer-cr {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--text-muted);
+  }
+
+  /* ── SCROLL REVEALS ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.22s; }
+  .reveal-delay-3 { transition-delay: 0.34s; }
+  .reveal-delay-4 { transition-delay: 0.46s; }
+  .reveal-delay-5 { transition-delay: 0.58s; }
+
+  /* ── KEYFRAMES ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1024px) {
+    .abstract { grid-template-columns: 1fr; gap: 3rem; }
+    .abstract-label-col { position: static; }
+    .params-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .recall-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .system-flow { display: none; }
+    .layer-grid { grid-template-columns: 1fr; }
+    .modes-grid { grid-template-columns: 1fr 1fr; }
+    .future-grid { grid-template-columns: 1fr 1fr; }
+    .plugin-full-body { grid-template-columns: 1fr; }
+    .pf-main { border-right: none; border-bottom: 1px solid var(--border); }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 1.2rem 1.5rem; }
+    .abstract, .architecture, .parameters, .control-modes, .recall-inner, .plugin-section, .future-inner { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .problem-cards { grid-template-columns: 1fr; }
+    .modes-grid { grid-template-columns: 1fr; }
+    .future-grid { grid-template-columns: 1fr; }
+    .problems-header { flex-direction: column; gap: 1.5rem; }
+    footer { flex-direction: column; text-align: center; }
+    .footer-links { flex-wrap: wrap; justify-content: center; }
+  }
+
+  /* ── CONCEPT POPUP ── */
+  .popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.82);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    animation: popupFadeIn 0.5s var(--ease-out) 0.3s both;
+  }
+  @keyframes popupFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .popup-overlay.hidden {
+  display: none;
+}
+  .popup-box {
+    background: var(--off-black);
+    border: 1px solid var(--border-bright);
+    max-width: 580px;
+    width: 100%;
+    animation: popupSlideUp 0.6s var(--ease-out) 0.4s both;
+  }
+  @keyframes popupSlideUp {
+    from { opacity: 0; transform: translateY(32px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .popup-top-bar {
+    background: var(--mid);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .popup-top-label {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--blue);
+  }
+  .popup-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--cyan);
+    animation: popDotPulse 2s ease-in-out infinite;
+  }
+  @keyframes popDotPulse {
+    0%, 100% { opacity: 0.35; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.4); }
+  }
+  .popup-close {
+    background: none;
+    border: 1px solid var(--border-bright);
+    color: var(--text-muted);
+    width: 28px; height: 28px;
+    border-radius: 2px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.2s, color 0.2s;
+    line-height: 1;
+  }
+  .popup-close:hover { border-color: rgba(74,144,217,0.5); color: var(--blue); }
+  .popup-body { padding: 2.8rem 3rem; }
+  .popup-eyebrow {
+    font-size: 0.62rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 1.2rem;
+    opacity: 0.8;
+  }
+  .popup-title {
+    font-family: var(--mono);
+    font-size: 1.9rem;
+    font-weight: 300;
+    line-height: 1.15;
+    color: var(--white);
+    margin-bottom: 1.8rem;
+  }
+  .popup-title em { font-style: italic; color: var(--cool-white); opacity: 0.6; }
+  .popup-text {
+    font-size: 0.88rem;
+    font-weight: 200;
+    color: var(--text-mid);
+    line-height: 1.82;
+    margin-bottom: 1rem;
+  }
+  .popup-text strong { color: var(--white); font-weight: 400; }
+  .popup-status {
+    display: flex;
+    gap: 0.55rem;
+    margin: 1.8rem 0;
+    flex-wrap: wrap;
+  }
+  .popup-status-tag {
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 0.4rem 0.9rem;
+    border-radius: 2px;
+    border: 1px solid;
+    font-family: var(--mono);
+  }
+  .popup-status-tag.phase { color: var(--gold); border-color: rgba(201,169,110,0.3); background: rgba(201,169,110,0.05); }
+  .popup-status-tag.rd { color: var(--cyan); border-color: rgba(91,196,224,0.25); background: rgba(91,196,224,0.04); }
+  .popup-status-tag.concept { color: var(--text-muted); border-color: var(--border-bright); }
+  .popup-divider { width: 100%; height: 1px; background: var(--border); margin: 1.8rem 0 1.4rem; }
+  .popup-credit {
+    font-size: 0.78rem;
+    font-weight: 200;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+  .popup-credit strong { color: var(--text-mid); font-weight: 300; }
+  .popup-actions {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+  }
+  .popup-btn-primary {
+    flex: 1;
+    min-width: 150px;
+    text-align: center;
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--black);
+    background: var(--blue);
+    border: none;
+    padding: 0.9rem 1.5rem;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: opacity 0.22s;
+    font-family: var(--mono);
+  }
+  .popup-btn-primary:hover { opacity: 0.82; }
+  .popup-btn-ghost {
+    flex: 1;
+    min-width: 150px;
+    text-align: center;
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-mid);
+    background: none;
+    border: 1px solid var(--border-bright);
+    padding: 0.9rem 1.5rem;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: color 0.22s, border-color 0.22s;
+    text-decoration: none;
+    display: inline-block;
+    font-family: var(--mono);
+  }
+  .popup-btn-ghost:hover { color: var(--white); border-color: rgba(74,144,217,0.4); }
+</style>
+</head>
+<body>
+
+<!-- CONCEPT POPUP -->
+<div class="popup-overlay" id="popupOverlay">
+  <div class="popup-box">
+    <div class="popup-top-bar">
+      <div class="popup-top-label">
+        <div class="popup-dot"></div>
+        <span>Notice · UXMG Concept Design</span>
+      </div>
+      <button class="popup-close" id="popupClose" aria-label="Close">✕</button>
+    </div>
+    <div class="popup-body">
+      <p class="popup-eyebrow">Before You Explore</p>
+      <h2 class="popup-title">This is an<br><em>experimental concept.</em></h2>
+      <p class="popup-text"><strong>AAES does not yet exist as a built system.</strong> What you're viewing is a detailed technical concept for the Adaptive Acoustic Environment System — currently in the R&amp;D and funding phase alongside The Facility.</p>
+      <p class="popup-text">Every system, layer, and specification shown here represents a <strong>real, developed concept</strong> by Geordie Allen — actively being researched and refined toward eventual implementation.</p>
+      <div class="popup-status">
+        <span class="popup-status-tag phase">Funding Phase</span>
+        <span class="popup-status-tag rd">R&amp;D Active</span>
+        <span class="popup-status-tag concept">Concept Design</span>
+      </div>
+      <div class="popup-divider"></div>
+      <p class="popup-credit">Conceptualized and developed by <strong>Geordie Allen</strong>, Founder of User Experience Media Group. AAES is an original system concept under active development.</p>
+      <div class="popup-actions">
+        <button class="popup-btn-primary" id="popupEnter">Explore AAES →</button>
+        <a class="popup-btn-ghost" href="index.html">← The Facility</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONCEPT BANNER -->
+<div class="concept-banner">
+  <div class="dot"></div>
+  <p>Experimental Concept — R&amp;D &amp; Funding Phase · Conceptualized by Geordie Allen, UXMG</p>
+  <div class="dot"></div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-left">
+    <a class="nav-back" href="index.html">The Facility</a>
+    <div class="nav-divider"></div>
+    <span class="nav-title"><span>AAES</span> — System Overview</span>
+  </div>
+  <span class="nav-badge">Concept · 2025</span>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-scope">
+    <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <!-- Grid lines -->
+      <defs>
+        <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
+          <path d="M 80 0 L 0 0 0 80" fill="none" stroke="rgba(74,144,217,0.06)" stroke-width="1"/>
+        </pattern>
+      </defs>
+      <rect width="1440" height="900" fill="url(#grid)"/>
+      <!-- Sine wave -->
+      <path d="M0,450 C90,390 90,510 180,450 C270,390 270,510 360,450 C450,390 450,510 540,450 C630,390 630,510 720,450 C810,390 810,510 900,450 C990,390 990,510 1080,450 C1170,390 1170,510 1260,450 C1350,390 1350,510 1440,450"
+            fill="none" stroke="rgba(74,144,217,0.12)" stroke-width="1.5">
+        <animate attributeName="d"
+          values="M0,450 C90,390 90,510 180,450 C270,390 270,510 360,450 C450,390 450,510 540,450 C630,390 630,510 720,450 C810,390 810,510 900,450 C990,390 990,510 1080,450 C1170,390 1170,510 1260,450 C1350,390 1350,510 1440,450;
+                  M0,450 C90,510 90,390 180,450 C270,510 270,390 360,450 C450,510 450,390 540,450 C630,510 630,390 720,450 C810,510 810,390 900,450 C990,510 990,390 1080,450 C1170,510 1170,390 1260,450 C1350,510 1350,390 1440,450;
+                  M0,450 C90,390 90,510 180,450 C270,390 270,510 360,450 C450,390 450,510 540,450 C630,390 630,510 720,450 C810,390 810,510 900,450 C990,390 990,510 1080,450 C1170,390 1170,510 1260,450 C1350,390 1350,510 1440,450"
+          dur="8s" repeatCount="indefinite"/>
+      </path>
+      <!-- Second wave -->
+      <path d="M0,450 C120,370 120,530 240,450 C360,370 360,530 480,450 C600,370 600,530 720,450 C840,370 840,530 960,450 C1080,370 1080,530 1200,450 C1320,370 1320,530 1440,450"
+            fill="none" stroke="rgba(91,196,224,0.06)" stroke-width="1">
+        <animate attributeName="d"
+          values="M0,450 C120,370 120,530 240,450 C360,370 360,530 480,450 C600,370 600,530 720,450 C840,370 840,530 960,450 C1080,370 1080,530 1200,450 C1320,370 1320,530 1440,450;
+                  M0,450 C120,530 120,370 240,450 C360,530 360,370 480,450 C600,530 600,370 720,450 C840,530 840,370 960,450 C1080,530 1080,370 1200,450 C1320,530 1320,370 1440,450;
+                  M0,450 C120,370 120,530 240,450 C360,370 360,530 480,450 C600,370 600,530 720,450 C840,370 840,530 960,450 C1080,370 1080,530 1200,450 C1320,370 1320,530 1440,450"
+          dur="12s" repeatCount="indefinite"/>
+      </path>
+    </svg>
+  </div>
+
+  <p class="hero-eyebrow">AAES — Adaptive Acoustic Environment System</p>
+  <h1 class="hero-title">
+    Acoustic<br>Control<br><em>Redefined</em>
+    <span class="acronym">Measurable · Repeatable · Recallable</span>
+  </h1>
+  <div class="hero-divider"></div>
+  <p class="hero-sub">A closed-loop acoustic control system that transforms studio acoustics from a static constraint into a dynamic, measurable, and recallable parameter within the production workflow.</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item">
+      <span class="hero-meta-val">5</span>
+      <span class="hero-meta-label">System Layers</span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="hero-meta-val">4</span>
+      <span class="hero-meta-label">Control Modes</span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="hero-meta-val">8+</span>
+      <span class="hero-meta-label">Measured Parameters</span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="hero-meta-val">∞</span>
+      <span class="hero-meta-label">Recall States</span>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ABSTRACT -->
+<section class="abstract">
+  <div class="abstract-label-col reveal">
+    <span class="section-num">01 · Abstract</span>
+    <h2 class="section-heading">What<br>is <em>AAES?</em></h2>
+  </div>
+  <div class="abstract-content reveal reveal-delay-1">
+    <p>The Adaptive Acoustic Environment System is a <strong>closed-loop acoustic control system</strong> designed to transform studio acoustics from a static constraint into a dynamic, measurable, and recallable parameter within the production workflow.</p>
+    <p>By combining real-time acoustic measurement, intelligent control logic, and motorized physical acoustic structures, AAES enables engineers to define, reproduce, and manipulate the acoustic behavior of a recording space with a level of precision and repeatability previously limited to digital environments.</p>
+    <p>AAES bridges the gap between analog acoustic spaces and digital production tools by allowing <strong>full session recall not only of signal chains and routing, but of the physical acoustic environment itself</strong> — turning the room into a controllable, repeatable, and shareable production parameter.</p>
+    <p>Conceptualized and developed by the founder of User Experience Media Group, <strong>Geordie Allen</strong>, AAES represents a fundamental rethinking of how acoustic spaces are treated within modern hybrid production workflows.</p>
+  </div>
+</section>
+
+<!-- PROBLEMS -->
+<section class="problems">
+  <div class="problems-inner">
+    <div class="problems-header reveal">
+      <h2>The<br><em>Problem</em></h2>
+      <p>Modern recording studios operate within fundamentally static acoustic environments. Four core limitations restrict creative and operational potential.</p>
+    </div>
+    <div class="problem-cards reveal">
+      <div class="problem-card">
+        <span class="problem-card-num">01</span>
+        <h3>Static Acoustics</h3>
+        <p>Rooms are designed with a fixed acoustic profile, forcing engineers to adapt recording techniques to the space rather than shaping the space to the source material. The room is a constraint, not a tool.</p>
+      </div>
+      <div class="problem-card">
+        <span class="problem-card-num">02</span>
+        <h3>Inconsistent Recall</h3>
+        <p>While DAWs allow full recall of digital sessions, the acoustic environment cannot be restored with precision. Changes in setup, mic positioning, and environmental conditions introduce variability between sessions.</p>
+      </div>
+      <div class="problem-card">
+        <span class="problem-card-num">03</span>
+        <h3>Reliance on Human Perception</h3>
+        <p>Acoustic decisions are often made subjectively, based on experience and intuition rather than continuous, measurable data. This limits repeatability and objective optimization across sessions and engineers.</p>
+      </div>
+      <div class="problem-card">
+        <span class="problem-card-num">04</span>
+        <h3>Variability Between Sessions</h3>
+        <p>Differences in room setup, mic placement, and acoustic conditions lead to inconsistencies across takes, sessions, and projects — introducing inefficiency and reducing the quality ceiling for long-form work.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section class="architecture">
+  <div class="arch-header reveal">
+    <span class="section-num" style="text-align:center; display:block; margin-bottom:0.5rem">02 · System Architecture</span>
+    <h2>Five <em>Integrated</em> Layers</h2>
+    <p>AAES is constructed as a unified stack — each layer feeding the next in a continuous closed-loop cycle of measurement, analysis, decision, and physical actuation.</p>
+  </div>
+
+  <div class="system-flow reveal">
+    <div class="flow-node">
+      <span class="flow-node-icon">◎</span>
+      <div class="flow-node-label">Sensing</div>
+      <div class="flow-node-sub">Distributed mics · RT60 · SPL · Impulse</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">
+      <span class="flow-node-icon">⊙</span>
+      <div class="flow-node-label">Analysis</div>
+      <div class="flow-node-sub">Multi-band calc · Modal analysis · EDF</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">
+      <span class="flow-node-icon">⊕</span>
+      <div class="flow-node-label">Control Logic</div>
+      <div class="flow-node-sub">Manual · Assisted · Target-based</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">
+      <span class="flow-node-icon">⌁</span>
+      <div class="flow-node-label">Actuation</div>
+      <div class="flow-node-sub">Clouds · Panels · Bass traps</div>
+    </div>
+  </div>
+
+  <div class="layer-grid">
+    <div class="layer-card reveal">
+      <span class="layer-num">5.1 · Sensing Layer</span>
+      <div class="layer-title">Acoustic Telemetry</div>
+      <p class="layer-desc">Continuously monitoring the room's acoustic behavior through a distributed measurement microphone network at strategic positions throughout the space.</p>
+      <ul class="layer-specs">
+        <li>RT60 / decay time by frequency band</li>
+        <li>Frequency response · Early reflection behavior</li>
+        <li>Room modes / low-frequency buildup</li>
+        <li>SPL · Noise floor · Impulse response</li>
+        <li>Live room center · Drum · Vocal · Corners</li>
+        <li>Mix position · Reverb chamber pickups</li>
+      </ul>
+    </div>
+    <div class="layer-card reveal reveal-delay-1">
+      <span class="layer-num">5.2 · Analysis Engine</span>
+      <div class="layer-title">Real-Time Processing</div>
+      <p class="layer-desc">The analysis engine processes live acoustic telemetry and extracts meaningful engineering parameters for display and decision-making.</p>
+      <ul class="layer-specs">
+        <li>Multi-band RT60 calculation</li>
+        <li>Impulse response analysis</li>
+        <li>Early vs late reflection separation</li>
+        <li>Modal analysis (low-frequency behavior)</li>
+        <li>Energy decay curve modeling</li>
+        <li>Comparison against target acoustic profiles</li>
+      </ul>
+    </div>
+    <div class="layer-card reveal reveal-delay-2">
+      <span class="layer-num">5.3 · Control Logic</span>
+      <div class="layer-title">Decision Layer</div>
+      <p class="layer-desc">Translates acoustic goals into physical system adjustments, supporting manual control, intelligent suggestions, and target-based optimization.</p>
+      <ul class="layer-specs">
+        <li>Manual control mapping</li>
+        <li>Assisted suggestions from measurement data</li>
+        <li>Target-based optimization</li>
+        <li>Safety and mechanical constraint handling</li>
+      </ul>
+    </div>
+    <div class="layer-card reveal">
+      <span class="layer-num">5.4 · Actuation</span>
+      <div class="layer-title">Physical Systems</div>
+      <p class="layer-desc">Motorized acoustic structures that physically reshape the room's behavior. Multi-point ceiling clouds, deployable GOBO panels, and variable bass traps.</p>
+      <ul class="layer-specs">
+        <li>Motorized ceiling cloud · Multi-point Z-axis control</li>
+        <li>Independent tilt and geometry · Encoder position tracking</li>
+        <li>QRD · Skyline · Hybrid diffusion panels</li>
+        <li>Absorption panels · Adjustable ratios</li>
+        <li>Motorized corner bass traps</li>
+        <li>Adjustable cavity depth</li>
+      </ul>
+    </div>
+    <div class="layer-card reveal reveal-delay-1">
+      <span class="layer-num">5.5 · Recall System</span>
+      <div class="layer-title">Full State Memory</div>
+      <p class="layer-desc">Complete restoration of the acoustic environment — physical actuator positions, measurement snapshots, and system configuration states all stored per session.</p>
+      <ul class="layer-specs">
+        <li>Physical positions of all actuators</li>
+        <li>Acoustic measurement snapshots</li>
+        <li>System configuration states</li>
+        <li>DAW session linking</li>
+        <li>Versioning and snapshot workflow</li>
+      </ul>
+    </div>
+    <div class="layer-card reveal reveal-delay-2">
+      <span class="layer-num">5.6 · Network Layer</span>
+      <div class="layer-title">Infrastructure</div>
+      <p class="layer-desc">High-performance network backbone supporting real-time data streaming, remote session capability, and facility-wide system communication.</p>
+      <ul class="layer-specs">
+        <li>10G–25G fiber backbone</li>
+        <li>Cat6A–Cat8 endpoints</li>
+        <li>Central server and NAS</li>
+        <li>Real-time data streaming</li>
+        <li>PoE for control devices and sensors</li>
+        <li>Dedicated remote session network</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- PARAMETERS -->
+<section class="parameters">
+  <div class="params-inner">
+    <div class="reveal">
+      <span class="section-num">06 · Acoustic Parameters</span>
+      <h2 style="font-family: var(--serif); font-size: clamp(2rem,4vw,3.2rem); font-weight:300; color:var(--white); margin-top:0.5rem">Controlled with <em style="font-style:italic;color:var(--blue)">precision.</em></h2>
+    </div>
+    <div class="params-grid">
+      <div class="param-left reveal">
+        <h3>Engineer the room<br>like a <em>plugin.</em></h3>
+        <p>AAES exposes acoustic parameters through the same perceptual control model as software tools — intuitive, parameter-driven, and instantly recallable. No acoustic engineering degree required to work with the room intentionally.</p>
+        <br>
+        <p>These parameters map directly to underlying physical actuation and IR interpolation, allowing creative control without requiring knowledge of measurement metrics.</p>
+      </div>
+      <div class="param-right reveal reveal-delay-2">
+        <div class="plugin-ui">
+          <div class="plugin-header">
+            <div class="plugin-header-title">AAES · Live Room A</div>
+            <div class="plugin-header-status">
+              <div class="status-dot"></div>
+              <span>Measuring</span>
+            </div>
+          </div>
+          <div class="plugin-body" id="paramBody">
+            <!-- JS populated -->
+          </div>
+          <div class="plugin-waveform">
+            <svg viewBox="0 0 400 60" preserveAspectRatio="none">
+              <path id="waveformPath" d="" fill="none" stroke="rgba(74,144,217,0.5)" stroke-width="1.5"/>
+              <path id="waveformFill" d="" fill="rgba(74,144,217,0.05)"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTROL MODES -->
+<section class="control-modes">
+  <div class="modes-header reveal">
+    <span class="section-num">07 · Control</span>
+    <h2>Four <em>Control</em> Modes</h2>
+  </div>
+  <div class="modes-grid reveal">
+    <div class="mode-card">
+      <div class="mode-indicator"></div>
+      <div class="mode-name">Manual</div>
+      <p class="mode-desc">Direct engineer control of all actuators. Full hands-on positioning of ceiling clouds, GOBO panels, and bass traps without system intervention.</p>
+    </div>
+    <div class="mode-card active">
+      <div class="mode-indicator"></div>
+      <div class="mode-name">Assisted</div>
+      <p class="mode-desc">System provides real-time recommendations based on live acoustic measurements. Engineer reviews and accepts or overrides suggestions.</p>
+    </div>
+    <div class="mode-card">
+      <div class="mode-indicator"></div>
+      <div class="mode-name">Target</div>
+      <p class="mode-desc">Select a predefined acoustic goal — tight drum room, vocal booth, orchestral space — and the system adjusts the environment to match the target profile.</p>
+    </div>
+    <div class="mode-card">
+      <div class="mode-indicator"></div>
+      <div class="mode-name">Recall</div>
+      <p class="mode-desc">Loads a previously saved acoustic state. Restores all physical actuator positions and configurations to recreate an exact prior environment.</p>
+    </div>
+  </div>
+</section>
+
+<!-- RECALL SYSTEM -->
+<section class="recall">
+  <div class="recall-inner">
+    <div class="reveal">
+      <span class="section-num">08 · Recall</span>
+      <h2 style="font-family:var(--serif); font-size:clamp(2rem,4vw,3.2rem); font-weight:300; color:var(--white); margin-top:0.5rem">Open a session.<br><em style="font-style:italic;color:var(--cyan)">Restore everything.</em></h2>
+    </div>
+    <div class="recall-grid">
+      <div class="recall-left reveal">
+        <h3>Acoustic memory,<br>built into<br><em>the workflow.</em></h3>
+        <p>AAES integrates directly with DAW workflows, allowing acoustic states to be session-linked and restored automatically or on demand. Every parameter of the physical room is stored alongside the digital session.</p>
+        <p>Resume a project days or weeks later with complete environmental consistency — eliminating variability between takes and revisions.</p>
+        <div class="recall-modes">
+          <div class="recall-mode">
+            <span class="recall-mode-icon">◈</span>
+            <div>
+              <div class="recall-mode-name">Passive Recall</div>
+              <div class="recall-mode-desc">DAW references saved acoustic state as metadata. Engineer can review and manually restore the environment.</div>
+            </div>
+          </div>
+          <div class="recall-mode">
+            <span class="recall-mode-icon">⊕</span>
+            <div>
+              <div class="recall-mode-name">Active Recall</div>
+              <div class="recall-mode-desc">DAW triggers AAES to physically reconfigure the room on session load — fully automated restoration of the acoustic environment.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <div class="session-visual">
+          <div class="session-header">
+            <div class="win-dot red"></div>
+            <div class="win-dot yellow"></div>
+            <div class="win-dot green"></div>
+            <div class="session-title">Session: TrackA_v3.als · AAES State Linked</div>
+          </div>
+          <div class="session-body">
+            <div class="session-row">
+              <div class="session-row-left">
+                <span class="session-icon">⌁</span>
+                <span class="session-row-name">Signal Routing</span>
+              </div>
+              <span class="session-row-val">Restored</span>
+            </div>
+            <div class="session-row">
+              <div class="session-row-left">
+                <span class="session-icon">◉</span>
+                <span class="session-row-name">Hardware Chain</span>
+              </div>
+              <span class="session-row-val">Restored</span>
+            </div>
+            <div class="session-row">
+              <div class="session-row-left">
+                <span class="session-icon">◈</span>
+                <span class="session-row-name">Ceiling Cloud · Height</span>
+              </div>
+              <span class="session-row-val">2.4m</span>
+            </div>
+            <div class="session-row">
+              <div class="session-row-left">
+                <span class="session-icon">◈</span>
+                <span class="session-row-name">Bass Traps · L/R</span>
+              </div>
+              <span class="session-row-val">68% / 72%</span>
+            </div>
+            <div class="session-row">
+              <div class="session-row-left">
+                <span class="session-icon">⊙</span>
+                <span class="session-row-name">RT60 · Mid</span>
+              </div>
+              <span class="session-row-val">0.38s</span>
+            </div>
+            <div class="session-row">
+              <div class="session-row-left">
+                <span class="session-icon">⊙</span>
+                <span class="session-row-name">Monitoring Config</span>
+              </div>
+              <span class="session-row-val">Stereo / Main</span>
+            </div>
+            <button class="session-restore-btn">↺ Restore Full State</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLUGIN / DIGITAL EXTENSION -->
+<section class="plugin-section">
+  <div class="reveal">
+    <span class="section-num">14 · Digital Extension</span>
+    <h2 style="font-family:var(--serif); font-size:clamp(2rem,4vw,3.5rem); font-weight:300; color:var(--white); margin-top:0.5rem; line-height:1.1">AAES Plugin &<br><em style="font-style:italic; color:var(--blue)">IR Ecosystem</em></h2>
+    <p style="font-size:0.95rem; font-weight:200; color:var(--text-mid); max-width:600px; line-height:1.8; margin-top:1.5rem">The physical system extends into a software-based acoustic engine — distributing AAES-generated acoustic environments as a scalable plugin product accessible without physical access to the facility.</p>
+  </div>
+  <div class="plugin-full reveal">
+    <div class="plugin-full-header">
+      <div class="pf-title">AAES Plugin · <span>v0.1 Concept</span></div>
+      <div class="pf-tabs">
+        <div class="pf-tab active">IR Library</div>
+        <div class="pf-tab">Parameters</div>
+        <div class="pf-tab">Presets</div>
+        <div class="pf-tab">Settings</div>
+      </div>
+    </div>
+    <div class="plugin-full-body">
+      <div class="pf-main">
+        <div class="pf-main-label">Acoustic State Grid · Live Room A · Ceiling Height × Panel Config</div>
+        <div class="ir-grid" id="irGrid"></div>
+      </div>
+      <div class="pf-side">
+        <div style="font-family:var(--mono); font-size:0.62rem; color:var(--text-muted); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.5rem">Presets</div>
+        <div class="pf-preset selected">
+          <div class="pf-preset-name">Tight Drum Room</div>
+          <div class="pf-preset-meta">RT60 0.28s · Low absorption</div>
+        </div>
+        <div class="pf-preset">
+          <div class="pf-preset-name">Large Live Room</div>
+          <div class="pf-preset-meta">RT60 0.72s · Wide cloud</div>
+        </div>
+        <div class="pf-preset">
+          <div class="pf-preset-name">Dead Vocal Booth</div>
+          <div class="pf-preset-meta">RT60 0.14s · Full absorption</div>
+        </div>
+        <div class="pf-preset">
+          <div class="pf-preset-name">Orchestral Space</div>
+          <div class="pf-preset-meta">RT60 1.4s · High diffusion</div>
+        </div>
+        <div class="pf-preset">
+          <div class="pf-preset-name">Film Score Stage</div>
+          <div class="pf-preset-meta">RT60 0.95s · Hybrid panels</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FUTURE -->
+<section class="future">
+  <div class="future-inner">
+    <div class="future-header reveal">
+      <span class="section-num" style="text-align:center;display:block;margin-bottom:0.5rem">13 · Future Expansion</span>
+      <h2>Where AAES<br><em>is going.</em></h2>
+      <p>AAES is designed as a modular and extensible system. Its architecture supports a range of future capabilities that expand both technical function and its role in modern production.</p>
+    </div>
+    <div class="future-grid">
+      <div class="future-card reveal">
+        <span class="future-card-num">13.1</span>
+        <h3>AI-Assisted Optimization</h3>
+        <p>Machine learning models trained on accumulated acoustic data — physical configurations, measured responses, and user-selected outcomes — to predict optimal configurations and reduce setup time.</p>
+        <span class="future-tag">Machine Learning</span>
+      </div>
+      <div class="future-card reveal reveal-delay-1">
+        <span class="future-card-num">13.2</span>
+        <h3>Predictive Acoustic Modeling</h3>
+        <p>Shifting from reactive measurement to predictive modeling: pre-visualizing acoustic outcomes before physical movement, enabling simulation-based workflows before committing to adjustments.</p>
+        <span class="future-tag">Predictive System</span>
+      </div>
+      <div class="future-card reveal reveal-delay-2">
+        <span class="future-card-num">13.3</span>
+        <h3>Cross-Room Synchronization</h3>
+        <p>In multi-AAES facilities, matching acoustic profiles across different live rooms, enabling consistent recording environments for multi-room sessions and distributed workflows.</p>
+        <span class="future-tag">Multi-Room</span>
+      </div>
+      <div class="future-card reveal">
+        <span class="future-card-num">13.4</span>
+        <h3>Remote Acoustic Matching</h3>
+        <p>Engineers in different locations matching acoustic environments via AAES-enabled systems — remote collaboration with consistent spatial characteristics across facilities and projects.</p>
+        <span class="future-tag">Remote · Collaboration</span>
+      </div>
+      <div class="future-card reveal reveal-delay-1">
+        <span class="future-card-num">13.5</span>
+        <h3>Automated IR Generation</h3>
+        <p>AAES as a persistent acoustic sampling engine — automated capture of IR datasets across defined parameter ranges, building continuously growing proprietary acoustic libraries.</p>
+        <span class="future-tag">IR · Library</span>
+      </div>
+      <div class="future-card reveal reveal-delay-2">
+        <span class="future-card-num">13.7</span>
+        <h3>Broader Production Integration</h3>
+        <p>Integration with lighting and stage automation (DMX), virtual production environments, spatial audio and immersive monitoring systems, and real-time live performance control.</p>
+        <span class="future-tag">DMX · Spatial Audio</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL STATEMENT -->
+<section class="final-statement reveal">
+  <blockquote>
+    "Acoustics become a <em>controllable, recallable, and shareable</em> parameter — not a fixed property of a space."
+  </blockquote>
+  <cite>AAES · Final Position Statement<br><span>Geordie Allen · User Experience Media Group · 2025</span></cite>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo"><span>UX</span>MG · AAES</div>
+  <ul class="footer-links">
+    <li><a href="index.html">← The Facility</a></li>
+    <li><a href="#">System Overview</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+  <div class="footer-cr">© 2025 User Experience Media Group</div>
+</footer>
+
+<script>
+  // ── POPUP ──
+  const overlay = document.getElementById('popupOverlay');
+  const popupClose = document.getElementById('popupClose');
+  const popupEnter = document.getElementById('popupEnter');
+
+  document.body.style.overflow = 'hidden';
+
+  function closePopup() {
+    overlay.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  popupClose.addEventListener('click', closePopup);
+  popupEnter.addEventListener('click', closePopup);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) closePopup(); });
+
+  // ── SCROLL REVEAL ──
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+  reveals.forEach(el => observer.observe(el));
+
+  // Plugin param bars
+  const params = [
+    { name: 'Room Size', val: 72 },
+    { name: 'Tightness', val: 35 },
+    { name: 'Brightness', val: 58 },
+    { name: 'Low-End Control', val: 65 },
+    { name: 'Reflection Density', val: 42 },
+    { name: 'Depth / Distance', val: 55 },
+    { name: 'Room Mic Bloom', val: 28 },
+  ];
+  const body = document.getElementById('paramBody');
+  if (body) {
+    params.forEach(p => {
+      body.innerHTML += `
+        <div class="param-row">
+          <span class="param-name">${p.name}</span>
+          <div class="param-bar"><div class="param-fill" style="width:${p.val}%"></div></div>
+          <span class="param-val">${p.val}</span>
+        </div>`;
+    });
+  }
+
+  // Waveform
+  function buildWave() {
+    const pts = [];
+    const fillPts = [];
+    for (let x = 0; x <= 400; x += 4) {
+      const y = 30 + Math.sin(x * 0.05) * 12 + Math.sin(x * 0.12) * 5 + Math.random() * 3;
+      pts.push(`${x},${y}`);
+      fillPts.push(`${x},${y}`);
+    }
+    const pathD = 'M' + pts.join(' L');
+    const fillD = 'M0,60 L' + fillPts.join(' L') + ' L400,60 Z';
+    const wavePath = document.getElementById('waveformPath');
+    const waveFill = document.getElementById('waveformFill');
+    if (wavePath) wavePath.setAttribute('d', pathD);
+    if (waveFill) waveFill.setAttribute('d', fillD);
+  }
+  buildWave();
+
+  // IR grid
+  const grid = document.getElementById('irGrid');
+  if (grid) {
+    for (let i = 0; i < 49; i++) {
+      const val = Math.random();
+      const cell = document.createElement('div');
+      cell.className = 'ir-cell';
+      const r = Math.floor(val * 74 + 4);
+      const g = Math.floor(val * 144 + 30);
+      const b = Math.floor(val * 217 + 50);
+      const a = 0.08 + val * 0.55;
+      cell.style.background = `rgba(${r},${g},${b},${a})`;
+      cell.title = `State ${i+1} · RT60 ${(0.15 + val * 1.2).toFixed(2)}s`;
+      grid.appendChild(cell);
+    }
+  }
+</script>
+</body>
+</html>
