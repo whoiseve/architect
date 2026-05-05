@@ -119,9 +119,41 @@
     overflow: hidden;
     padding: 8rem 2rem 6rem;
   }
+  .section-bg {
+    --section-bg-image: none;
+    --section-bg-opacity: 0;
+    --section-bg-tint: rgba(0,0,0,0.62);
+    --section-bg-blend: normal;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+  .section-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background-image: var(--section-bg-image);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: var(--section-bg-opacity);
+    mix-blend-mode: var(--section-bg-blend);
+    pointer-events: none;
+  }
+  .section-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--section-bg-tint);
+    opacity: var(--section-bg-opacity);
+    pointer-events: none;
+  }
   .hero-bg {
     position: absolute;
     inset: 0;
+    z-index: -1;
     background:
       radial-gradient(ellipse 80% 60% at 50% 60%, rgba(201,169,110,0.04) 0%, transparent 70%),
       radial-gradient(ellipse 50% 40% at 50% 100%, rgba(201,169,110,0.06) 0%, transparent 60%);
@@ -129,11 +161,17 @@
   .hero-grid {
     position: absolute;
     inset: 0;
+    z-index: 0;
     background-image:
       linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
     background-size: 60px 60px;
     mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 80%);
+    pointer-events: none;
+  }
+  .hero > *:not(.hero-bg):not(.hero-grid) {
+    position: relative;
+    z-index: 1;
   }
   .hero-eyebrow {
     font-size: 0.68rem;
@@ -234,38 +272,7 @@
   .statement {
     padding: 10rem 2rem;
     text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-  .statement::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 50%; transform: translateX(-50%);
-    width: 1px; height: 80px;
-    background: linear-gradient(to bottom, transparent, var(--gold));
-  }
-  .statement-inner { max-width: 900px; margin: 0 auto; }
-  .statement h2 {
-    font-family: var(--display);
-    font-size: clamp(2rem, 5vw, 3.8rem);
-    font-weight: 300;
-    line-height: 1.25;
-    color: var(--cream);
-  }
-  .statement h2 em {
-    font-style: italic;
-    color: var(--gold);
-    opacity: 0.9;
-  }
-  .statement p {
-    margin-top: 2rem;
-    font-size: 1.05rem;
-    font-weight: 200;
-    color: var(--text-mid);
-    line-height: 1.8;
-    max-width: 640px;
-    margin-left: auto;
-    margin-right: auto;
+    background: var(--black);
   }
 
   /* ── SECTIONS GENERIC ── */
@@ -329,6 +336,45 @@
     position: relative;
     overflow: hidden;
     transition: background 0.4s var(--ease-smooth);
+  }
+  .block-bg {
+    --block-bg-image: none;
+    --block-bg-opacity: 0;
+    --block-bg-tint: rgba(10,10,10,0.76);
+    --block-bg-position: center;
+    --block-bg-size: cover;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+  .block-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background-image: var(--block-bg-image);
+    background-size: var(--block-bg-size);
+    background-position: var(--block-bg-position);
+    background-repeat: no-repeat;
+    opacity: var(--block-bg-opacity);
+    pointer-events: none;
+    transition: opacity 0.35s var(--ease-smooth), transform 0.5s var(--ease-smooth);
+  }
+  .block-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--block-bg-tint);
+    opacity: var(--block-bg-opacity);
+    pointer-events: none;
+  }
+  .block-bg:hover::before {
+    transform: scale(1.035);
+  }
+  .block-bg > * {
+    position: relative;
+    z-index: 1;
   }
   .feature-card::before {
     content: '';
@@ -853,6 +899,56 @@
   }
   .pkg-cta:hover { border-color: var(--gold); opacity: 0.8; }
 
+  /* ── REUSABLE IMAGE BACKGROUNDS FOR CARDS / BLOCKS ── */
+  .feature-card.block-bg::before,
+  .visual-main.block-bg::before,
+  .visual-side-item.block-bg::before,
+  .stream.block-bg::before,
+  .package-card.block-bg::before,
+  .recall-item.block-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: auto;
+    height: auto;
+    background: none;
+    background-image: var(--block-bg-image);
+    background-size: var(--block-bg-size);
+    background-position: var(--block-bg-position);
+    background-repeat: no-repeat;
+    opacity: var(--block-bg-opacity);
+    transform: none;
+    pointer-events: none;
+  }
+
+  .feature-card.block-bg::after,
+  .visual-main.block-bg::after,
+  .visual-side-item.block-bg::after,
+  .stream.block-bg::after,
+  .package-card.block-bg::after,
+  .recall-item.block-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: auto;
+    height: auto;
+    background: var(--block-bg-tint);
+    opacity: var(--block-bg-opacity);
+    transform: none;
+    pointer-events: none;
+  }
+
+  .feature-card.block-bg:hover::before,
+  .visual-main.block-bg:hover::before,
+  .visual-side-item.block-bg:hover::before,
+  .stream.block-bg:hover::before,
+  .package-card.block-bg:hover::before,
+  .recall-item.block-bg:hover::before {
+    transform: scale(1.035);
+  }
+
   /* ── FOOTER ── */
   footer {
     border-top: 1px solid var(--border);
@@ -1007,9 +1103,212 @@
     .recall-item { border-right: none; border-bottom: 1px solid var(--border); }
     .recall-item:last-child { border-bottom: none; }
   }
+
+  /* ── CONCEPT POPUP ── */
+  .popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.78);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    animation: popupFadeIn 0.5s var(--ease-out) 0.3s both;
+  }
+  @keyframes popupFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .popup-overlay.hidden {
+  display: none;
+}
+  .popup-box {
+    background: var(--off-black);
+    border: 1px solid var(--border-bright);
+    max-width: 580px;
+    width: 100%;
+    animation: popupSlideUp 0.6s var(--ease-out) 0.4s both;
+  }
+  @keyframes popupSlideUp {
+    from { opacity: 0; transform: translateY(32px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .popup-top-bar {
+    background: var(--graphite);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .popup-top-label {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .popup-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    animation: popDotPulse 2s ease-in-out infinite;
+  }
+  @keyframes popDotPulse {
+    0%, 100% { opacity: 0.35; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.4); }
+  }
+  .popup-close {
+    background: none;
+    border: 1px solid var(--border-bright);
+    color: var(--text-muted);
+    width: 28px; height: 28px;
+    border-radius: 2px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.2s, color 0.2s;
+    line-height: 1;
+  }
+  .popup-close:hover { border-color: rgba(255,255,255,0.3); color: var(--white); }
+  .popup-body { padding: 2.8rem 3rem; }
+  .popup-eyebrow {
+    font-size: 0.62rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.2rem;
+    opacity: 0.8;
+  }
+  .popup-title {
+    font-family: var(--mono);
+    font-size: 1.9rem;
+    font-weight: 300;
+    line-height: 1.15;
+    color: var(--white);
+    margin-bottom: 1.8rem;
+  }
+  .popup-title em {
+    font-style: italic;
+    color: var(--cream);
+    opacity: 0.6;
+  }
+  .popup-text {
+    font-size: 0.88rem;
+    font-weight: 200;
+    color: var(--text-mid);
+    line-height: 1.82;
+    margin-bottom: 1rem;
+  }
+  .popup-text strong { color: var(--white); font-weight: 400; }
+  .popup-status {
+    display: flex;
+    gap: 0.55rem;
+    margin: 1.8rem 0;
+    flex-wrap: wrap;
+  }
+  .popup-status-tag {
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 0.4rem 0.9rem;
+    border-radius: 2px;
+    border: 1px solid;
+  }
+  .popup-status-tag.phase { color: var(--gold); border-color: rgba(201,169,110,0.3); background: rgba(201,169,110,0.05); }
+  .popup-status-tag.rd { color: rgba(180,220,255,0.75); border-color: rgba(180,220,255,0.18); background: rgba(180,220,255,0.03); }
+  .popup-status-tag.concept { color: var(--text-muted); border-color: var(--border-bright); }
+  .popup-divider { width: 100%; height: 1px; background: var(--border); margin: 1.8rem 0 1.4rem; }
+  .popup-credit {
+    font-size: 0.78rem;
+    font-weight: 200;
+    color: var(--text-muted);
+    line-height: 1.65;
+    margin-bottom: 0;
+  }
+  .popup-credit strong { color: var(--text-mid); font-weight: 300; }
+  .popup-actions {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+  }
+  .popup-btn-primary {
+    flex: 1;
+    min-width: 150px;
+    text-align: center;
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--black);
+    background: var(--gold);
+    border: none;
+    padding: 0.9rem 1.5rem;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: opacity 0.22s;
+    font-family: var(--mono);
+  }
+  .popup-btn-primary:hover { opacity: 0.85; }
+  .popup-btn-ghost {
+    flex: 1;
+    min-width: 150px;
+    text-align: center;
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-mid);
+    background: none;
+    border: 1px solid var(--border-bright);
+    padding: 0.9rem 1.5rem;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: color 0.22s, border-color 0.22s;
+    text-decoration: none;
+    display: inline-block;
+    font-family: var(--mono);
+  }
+  .popup-btn-ghost:hover { color: var(--white); border-color: rgba(255,255,255,0.28); }
 </style>
 </head>
 <body>
+
+<!-- CONCEPT POPUP -->
+<div class="popup-overlay" id="popupOverlay">
+  <div class="popup-box">
+    <div class="popup-top-bar">
+      <div class="popup-top-label">
+        <div class="popup-dot"></div>
+        <span>Notice · UXMG Concept Design</span>
+      </div>
+      <button class="popup-close" id="popupClose" aria-label="Close">✕</button>
+    </div>
+    <div class="popup-body">
+      <p class="popup-eyebrow">Before You Explore</p>
+      <h2 class="popup-title">This is an<br><em>experimental concept.</em></h2>
+      <p class="popup-text"><strong>The Facility does not yet exist as a physical space.</strong> What you're viewing is a design and vision concept for a fully integrated creative production compound — currently in the R&amp;D and funding phase.</p>
+      <p class="popup-text">Every element shown here — from the Adaptive Acoustic Environment System to the virtual production stage and merch warehouse — represents a <strong>real, developed concept</strong> being actively researched and refined toward eventual construction.</p>
+      <div class="popup-status">
+        <span class="popup-status-tag phase">Funding Phase</span>
+        <span class="popup-status-tag rd">R&amp;D Active</span>
+        <span class="popup-status-tag concept">Concept Design</span>
+      </div>
+      <div class="popup-divider"></div>
+      <p class="popup-credit">Conceptualized and developed by <strong>Geordie Allen</strong>, Founder of User Experience Media Group. All systems including AAES are original concepts under active development.</p>
+      <div class="popup-actions">
+        <button class="popup-btn-primary" id="popupEnter">Explore the Concept →</button>
+        <a class="popup-btn-ghost" href="aaes.html">Learn About AAES</a>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- NAV -->
 <nav id="nav">
@@ -1019,12 +1318,13 @@
     <li><a href="#visual">Visual</a></li>
     <li><a href="#model">Model</a></li>
     <li><a href="#packages">Packages</a></li>
+    <li><a href="./aaes.html">AAES</a></li>
   </ul>
   <a class="nav-cta" href="#packages">Inquire</a>
 </nav>
 
 <!-- HERO -->
-<section class="hero" id="hero">
+<section class="hero section-bg" id="hero" style="--section-bg-image: url('./img/Facility_Exterior_Concept.png'); --section-bg-opacity: 0.25; --section-bg-tint: rgba(0,0,0,0.58);">
   <div class="hero-bg"></div>
   <div class="hero-grid"></div>
   <p class="hero-eyebrow">User Experience Media Group</p>
@@ -1041,7 +1341,7 @@
 </section>
 
 <!-- STATEMENT -->
-<section class="statement">
+<section class="statement section-bg" style="--section-bg-image: url('#'); --section-bg-opacity: 0; --section-bg-tint: rgba(5,5,5,0.72);">
   <div class="statement-inner reveal">
     <h2>The creative pipeline<br>has always been <em>broken.</em></h2>
     <p>Artists move between studios, videographers, editors, designers, and platforms — losing time, money, and creative continuity at every step. The Facility eliminates that fragmentation entirely.</p>
@@ -1095,7 +1395,7 @@
 </div>
 
 <!-- SECTOR ONE: AUDIO -->
-<section id="audio">
+<section id="audio" class="section-bg" style="--section-bg-image: url('./img/AAES_CONCEPT_1.png'); --section-bg-opacity: 0.25; --section-bg-tint: rgba(5,5,5,0.68);">
   <div class="sector-intro reveal">
     <div>
       <p class="section-label">Sector One</p>
@@ -1105,25 +1405,25 @@
   </div>
 
   <div class="feature-grid">
-    <div class="feature-card reveal">
+    <div class="feature-card block-bg reveal" style="--block-bg-image: url('./img/Control_Room_A_1.png'); --block-bg-opacity: 0.35; --block-bg-tint: rgba(10,10,10,0.76);">
       <div class="card-num">01</div>
       <div class="card-title">Control Room A — Studio One</div>
       <p class="card-body">Primary production and mixing environment with a hybrid analog/digital workflow, Tier-1 monitoring, and full Dolby Atmos (9.2.4) support. Dual monitoring systems with sightlines into the live room and iso booths.</p>
       <span class="card-tag">Primary Production</span>
     </div>
-    <div class="feature-card reveal reveal-delay-1">
+    <div class="feature-card block-bg reveal reveal-delay-1" style="--block-bg-image: url('./img/Control_Room_B_1.png'); --block-bg-opacity: 0.35; --block-bg-tint: rgba(10,10,10,0.76);">
       <div class="card-num">02</div>
       <div class="card-title">Control Room B — Studio Two</div>
       <p class="card-body">Flexible suite built for beat production, writing sessions, editing, ADR, and education. Handles booking overflow while supporting student and alumni use in a lower-complexity environment.</p>
       <span class="card-tag">Flexible · Education</span>
     </div>
-    <div class="feature-card reveal reveal-delay-2">
+    <div class="feature-card block-bg reveal reveal-delay-2" style="--block-bg-image: url('./img/Live_Room_B.png'); --block-bg-opacity: 0.35; --block-bg-tint: rgba(10,10,10,0.76);">
       <div class="card-num">03</div>
       <div class="card-title">Live Rooms A &amp; B</div>
       <p class="card-body">Room A features the full AAES adaptive acoustic system. Room B is a versatile, fixed-treatment room for efficient tracking, overdubs, podcasting, and student sessions without AAES complexity.</p>
       <span class="card-tag">Recording · Tracking</span>
     </div>
-    <div class="feature-card reveal reveal-delay-3">
+    <div class="feature-card block-bg reveal reveal-delay-3" style="--block-bg-image: url('./img/Iso_Booth_1.png'); --block-bg-opacity: 0.25; --block-bg-tint: rgba(10,10,10,0.76);">
       <div class="card-num">04</div>
       <div class="card-title">Breakout Rooms</div>
       <p class="card-body">Dedicated vocal isolation booth, re-amp / iso booth, and a physically isolated reverb chamber with adjustable surfaces, variable damping, and multiple mic positions — integrated into the routing and AAES systems.</p>
@@ -1133,7 +1433,7 @@
 </section>
 
 <!-- AAES -->
-<section>
+<section class="section-bg" style="--section-bg-image: url('./img/Reverb_Chamber.png'); --section-bg-opacity: 0.15; --section-bg-tint: rgba(5,5,5,0.68);">
   <div class="aaes-section">
     <div class="aaes-left reveal">
       <p class="section-label">Adaptive Acoustic Environment System</p>
@@ -1173,25 +1473,25 @@
 </section>
 
 <!-- RECALL STRIP -->
-<div class="recall-strip">
+<div class="recall-strip section-bg" style="--section-bg-image: url('./img/RECALL1.png'); --section-bg-opacity: 0.25; --section-bg-tint: rgba(17,17,17,0.72);">
   <div class="reveal">
     <p class="section-label" style="text-align:center">Full Studio Recall System</p>
     <h3>Open a session.<br><em>Restore everything.</em></h3>
     <p>Every session state — signal routing, hardware chain, room acoustics, monitoring configuration — is fully reproducible. Resume across days or weeks with complete environmental consistency.</p>
     <div class="recall-items">
-      <div class="recall-item">
+      <div class="recall-item block-bg" style="--block-bg-image: url('#'); --block-bg-opacity: 0; --block-bg-tint: rgba(26,26,26,0.76);">
         <div class="recall-icon">⌁</div>
         <div class="recall-item-label">Signal Routing</div>
       </div>
-      <div class="recall-item">
+      <div class="recall-item block-bg" style="--block-bg-image: url('#'); --block-bg-opacity: 0; --block-bg-tint: rgba(26,26,26,0.76);">
         <div class="recall-icon">◈</div>
         <div class="recall-item-label">Hardware Chain</div>
       </div>
-      <div class="recall-item">
+      <div class="recall-item block-bg" style="--block-bg-image: url('#'); --block-bg-opacity: 0; --block-bg-tint: rgba(26,26,26,0.76);">
         <div class="recall-icon">◉</div>
         <div class="recall-item-label">Room Acoustics</div>
       </div>
-      <div class="recall-item">
+      <div class="recall-item block-bg" style="--block-bg-image: url('#'); --block-bg-opacity: 0; --block-bg-tint: rgba(26,26,26,0.76);">
         <div class="recall-icon">⊕</div>
         <div class="recall-item-label">Monitoring Config</div>
       </div>
@@ -1200,7 +1500,7 @@
 </div>
 
 <!-- SECTOR TWO: VISUAL -->
-<section id="visual">
+<section id="visual" class="section-bg" style="--section-bg-image: url('./img/VPS_Vol_2.png'); --section-bg-opacity: 0.25; --section-bg-tint: rgba(5,5,5,0.68);">
   <div class="sector-intro reveal">
     <div>
       <p class="section-label">Sector Two</p>
@@ -1210,7 +1510,7 @@
   </div>
 
   <div class="visual-grid">
-    <div class="visual-main reveal">
+    <div class="visual-main block-bg reveal" style="--block-bg-image: url('./img/Visual_Wing_2.png'); --block-bg-opacity: 0.25; --block-bg-tint: rgba(10,10,10,0.76);">
       <p class="section-label">Virtual Production Studio</p>
       <h3>In-house production.<br><em>No external stage required.</em></h3>
       <p>A fully controlled environment for music videos, branded content, and digital media. LED wall-driven Unreal Engine workflows, a DMX lighting grid with fixture-level control, and a fully integrated PTZ multi-cam system for live or offline recording.</p>
@@ -1227,17 +1527,17 @@
       </div>
     </div>
     <div class="visual-side">
-      <div class="visual-side-item reveal">
+      <div class="visual-side-item block-bg reveal" style="--block-bg-image: url('#'); --block-bg-opacity: 0; --block-bg-tint: rgba(10,10,10,0.76);">
         <span class="vs-tag">Production</span>
         <div class="vs-title">Podcast Studio</div>
         <p class="vs-desc">High-frequency booking space with modular sets, multi-cam recording, and livestream infrastructure. An accessible entry point for creators at any level.</p>
       </div>
-      <div class="visual-side-item reveal reveal-delay-1">
+      <div class="visual-side-item block-bg reveal reveal-delay-1" style="--block-bg-image: url('#'); --block-bg-opacity: 0; --block-bg-tint: rgba(10,10,10,0.76);">
         <span class="vs-tag">Sector Three</span>
         <div class="vs-title">Merch Production</div>
         <p class="vs-desc">DTG and DTF printing, custom packaging design, and fulfillment — moving digital concepts to physical product in-house. Rapid prototyping for launch cycles.</p>
       </div>
-      <div class="visual-side-item reveal reveal-delay-2">
+      <div class="visual-side-item block-bg reveal reveal-delay-2" style="--block-bg-image: url('#'); --block-bg-opacity: 0; --block-bg-tint: rgba(10,10,10,0.76);">
         <span class="vs-tag">Infrastructure</span>
         <div class="vs-title">10G–25G Network</div>
         <p class="vs-desc">Fiber backbone between all rooms, Dante facility-wide audio routing, PoE control, and dedicated remote session infrastructure built for real-time collaboration.</p>
@@ -1247,14 +1547,14 @@
 </section>
 
 <!-- BUSINESS MODEL -->
-<section id="model">
+<section id="model" class="section-bg" style="--section-bg-image: url('#'); --section-bg-opacity: 0; --section-bg-tint: rgba(5,5,5,0.68);">
   <div class="model-section">
     <div class="model-header reveal">
       <h2>Five<br>Invaluable<br><em>Solutions</em></h2>
       <p>The Facility operates on a hybrid model designed for creators who come to complete projects — not just book hours.</p>
     </div>
     <div class="model-streams reveal">
-      <div class="stream">
+      <div class="stream block-bg" style="--block-bg-image: url('#'); --block-bg-opacity: 0; --block-bg-tint: rgba(10,10,10,0.76);">
         <div class="stream-num">01</div>
         <div class="stream-title">Audio Production</div>
         <ul class="stream-items">
@@ -1267,7 +1567,7 @@
           <li>Podcast Residency & Production</li>
         </ul>
       </div>
-      <div class="stream">
+      <div class="stream block-bg" style="--block-bg-image: url('#'); --block-bg-opacity: 0; --block-bg-tint: rgba(10,10,10,0.76);">
         <div class="stream-num">02</div>
         <div class="stream-title">Video Production</div>
         <ul class="stream-items">
@@ -1280,7 +1580,7 @@
           <li>Loading Bays Available for Setup & Strike</li>
         </ul>
       </div>
-      <div class="stream">
+      <div class="stream block-bg" style="--block-bg-image: url('#'); --block-bg-opacity: 0; --block-bg-tint: rgba(10,10,10,0.76);">
         <div class="stream-num">03</div>
         <div class="stream-title">Merchandise Solutions</div>
         <ul class="stream-items">
@@ -1291,7 +1591,7 @@
           <li>Complete Merchandise Package</li>
         </ul>
       </div>
-      <div class="stream">
+      <div class="stream block-bg" style="--block-bg-image: url('#'); --block-bg-opacity: 0; --block-bg-tint: rgba(10,10,10,0.76);">
         <div class="stream-num">04</div>
         <div class="stream-title">Education</div>
         <ul class="stream-items">
@@ -1302,7 +1602,7 @@
           <li>Educational Instructors </li>
         </ul>
       </div>
-      <div class="stream">
+      <div class="stream block-bg" style="--block-bg-image: url('#'); --block-bg-opacity: 0; --block-bg-tint: rgba(10,10,10,0.76);">
         <div class="stream-num">05</div>
         <div class="stream-title">Events</div>
         <ul class="stream-items">
@@ -1320,7 +1620,7 @@
 </section>
 
 <!-- PACKAGES -->
-<section id="packages" class="packages-section">
+<section id="packages" class="packages-section section-bg" style="--section-bg-image: url('./img/Merch_Room.png'); --section-bg-opacity: 0.25; --section-bg-tint: rgba(17,17,17,0.74);">
   <div class="packages-inner">
     <div class="packages-header reveal">
       <p class="section-label">Productized Offerings</p>
@@ -1328,7 +1628,7 @@
       <p>Turnkey packages designed to remove every logistical and technical barrier from creation to market.</p>
     </div>
     <div class="package-cards reveal">
-      <div class="package-card">
+      <div class="package-card block-bg" style="--block-bg-image: url('#'); --block-bg-opacity: 0; --block-bg-tint: rgba(10,10,10,0.76);">
         <p class="pkg-eyebrow">Foundation</p>
         <div class="pkg-name">Studio<br>Booking</div>
         <p class="pkg-desc">Direct access to world-class rooms, systems, and engineers. Scalable from a single session to a full project block.</p>
@@ -1341,7 +1641,7 @@
         </ul>
         <a href="#" class="pkg-cta">Inquire →</a>
       </div>
-      <div class="package-card featured">
+      <div class="package-card featured block-bg" style="--block-bg-image: url('#'); --block-bg-opacity: 0; --block-bg-tint: rgba(26,26,26,0.76);">
         <p class="pkg-eyebrow">Flagship Package</p>
         <div class="pkg-name">Artist<br>Launch</div>
         <p class="pkg-desc">An end-to-end production experience that takes an artist from concept to a fully released, fully branded presence — under one roof, in a single creative workflow.</p>
@@ -1404,7 +1704,23 @@
 </div>
 
 <script>
-  // Nav scroll
+  // ── POPUP ──
+  const overlay = document.getElementById('popupOverlay');
+  const popupClose = document.getElementById('popupClose');
+  const popupEnter = document.getElementById('popupEnter');
+
+  document.body.style.overflow = 'hidden';
+
+  function closePopup() {
+    overlay.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  popupClose.addEventListener('click', closePopup);
+  popupEnter.addEventListener('click', closePopup);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) closePopup(); });
+
+  // ── NAV SCROLL ──
   const nav = document.getElementById('nav');
 
   if (nav) {
@@ -1413,7 +1729,7 @@
     });
   }
 
-  // Scroll reveal
+  // ── SCROLL REVEAL ──
   const reveals = document.querySelectorAll('.reveal');
 
   if ('IntersectionObserver' in window) {
@@ -1431,7 +1747,7 @@
     reveals.forEach(el => el.classList.add('visible'));
   }
 
-  // Smooth anchor scroll
+  // ── SMOOTH ANCHOR SCROLL ──
   document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', e => {
       const id = a.getAttribute('href');
